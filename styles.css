@@ -23,6 +23,20 @@ body {
 h1, h2 {
     text-align: center;
     color: #ff0000; /* Christmas Red */
+    position: relative;
+}
+
+h1 a {
+    position: absolute;
+    right: 10px;
+    top: 0;
+    font-size: 1rem;
+    color: #007BFF;
+    text-decoration: none;
+}
+
+h1 a:hover {
+    text-decoration: underline;
 }
 
 h1 {
@@ -144,4 +158,10 @@ td {
 .dragover {
     background-color: #ccffcc; /* Light green for drop target feedback */
     border: 2px dashed #3c8d0d;
+}
+
+.remove-icon {
+    cursor: pointer;
+    margin-left: 10px;
+    color: red;
 }
