@@ -1,0 +1,147 @@
+/* Reset and base styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url('images/background.jpg'); /* Add your background image here */
+    background-size: cover; /* Cover the entire background */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    min-height: 100vh; /* Ensure the body takes at least the full height of the viewport */
+    color: #333;
+}
+
+.container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Typography */
+h1, h2 {
+    text-align: center;
+    color: #ff0000; /* Christmas Red */
+}
+
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+h2 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+}
+
+/* Form styling */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+input[type="number"], .participant-input {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #3c8d0d;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Table styling */
+table {
+    width: 100%; /* Ensure table spans container width */
+    border-collapse: separate; /* Use "separate" to avoid border merging issues */
+    border-spacing: 0; /* Remove unintended spacing */
+}
+
+th, td {
+    width: 50%; /* Each column takes 50% of the table width */
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+td {
+    width: auto; /* Allow cells to auto-size based on content */
+    text-align: left; /* Align content to the left */
+    vertical-align: middle; /* Vertically center content */
+    padding: 10px; /* Add padding for better readability */
+    height: auto;
+}
+
+.receipient-cell {
+    display: flex; /* Flex container for text and image */
+    align-items: center; /* Vertically center text and image */
+    justify-content: space-between; /* Push text left and image right */
+}
+
+.cell-image {
+    max-height: 30px; /* Ensure image height is limited */
+    height: auto; /* Let width adjust proportionally */
+    width: auto; /* Maintain aspect ratio */
+    display: block; /* Prevent inline issues */
+    margin-left: 10px; /* Add space between image and text */
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+    .container {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .participant-input, button {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    table th, table td {
+        font-size: 0.8rem;
+        padding: 8px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+}
+
+.dragging {
+    opacity: 0.5;
+    background-color: #ffcccc; /* Light red for dragging feedback */
+}
+
+.dragover {
+    background-color: #ccffcc; /* Light green for drop target feedback */
+    border: 2px dashed #3c8d0d;
+}

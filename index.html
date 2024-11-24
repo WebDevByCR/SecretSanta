@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Santa</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Secret Santa</h1>
+        <form id="participantsForm">
+            <h2>Enter Participant Names:</h2>
+            <table id="participantsTable">
+                <thead>
+                    <tr>
+                        <th>Secret Santa</th>
+                        <th>Recipient</th>
+                    </tr>
+                </thead>
+                <tbody id="participantsBody">
+                    <!-- Input rows will be added here dynamically -->
+                </tbody>
+            </table>
+            <button type="button" id="addParticipantButton" onclick="addParticipant()">Add Participant</button>
+            <button type="button" id="secretSantaButton" onclick="assignSecretSantas()">Secret Santa</button>
+        </form>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
