@@ -1,122 +1,129 @@
 document.addEventListener('DOMContentLoaded', function () {
-    var addParticipantButton = document.getElementById('addParticipantButton');
-    var secretSantaButton = document.getElementById('secretSantaButton');
     const participantsBody = document.getElementById('participantsBody');
 
-    addParticipantButton.addEventListener('click', () => addParticipant(participantsBody));
-    secretSantaButton.addEventListener('click', assignSecretSantas);
+    document.getElementById('addParticipantButton').addEventListener('click', () => addParticipant(participantsBody));
+    document.getElementById('secretSantaButton').addEventListener('click', assignSecretSantas);
 
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Enter') {
-            addParticipant(participantsBody); 
-            event.preventDefault(); // Prevent default form submission or other actions 
+            addParticipant(participantsBody);
+            event.preventDefault(); // Prevent form submission
         }
     });
 
     // Load participants from localStorage
-    if(localStorage.length !== 0){
-        loadParticipants();
-    }else{
-        addParticipant(participantsBody);
-    }
+    loadParticipants();
 });
 
 function addParticipant(participantsBody, name = '') {
     const row = document.createElement('tr');
-    const santaCell = document.createElement('td');
-    const recipientCell = document.createElement('td');
-    const removeCell = document.createElement('td');
-    const input = document.createElement('input');
 
+    // Santa cell with input and remove icon
+    const santaCell = document.createElement('td');
+    const inputContainer = document.createElement('div');
+    inputContainer.classList.add('input-container');
+
+    const input = document.createElement('input');
     input.type = 'text';
     input.placeholder = 'Enter name';
     input.classList.add('participant-input');
-    input.value = name; // Set the input value if provided
+    input.value = name;
 
     const removeIcon = document.createElement('span');
-    removeIcon.innerHTML = '❌'; // Unicode for a remove icon
+    removeIcon.innerHTML = '❌';
     removeIcon.classList.add('remove-icon');
     removeIcon.addEventListener('click', () => removeParticipant(row));
 
-    santaCell.appendChild(input);
-    santaCell.appendChild(removeIcon);
-    recipientCell.setAttribute('draggable', 'true');
-    recipientCell.innerText = ''; // Placeholder for recipients
+    inputContainer.appendChild(removeIcon);
+    inputContainer.appendChild(input);
+    santaCell.appendChild(inputContainer);
+
+    // Recipient cell with drag-and-drop functionality
+    const recipientCell = document.createElement('td');
     recipientCell.classList.add('receipient-cell');
+    recipientCell.setAttribute('draggable', 'true');
     addDragAndDropHandlers(recipientCell);
 
     row.appendChild(santaCell);
     row.appendChild(recipientCell);
-    row.appendChild(removeCell);
     participantsBody.appendChild(row);
     input.focus();
 }
 
 function removeParticipant(row) {
-    const participantsBody = document.getElementById('participantsBody');
-    participantsBody.removeChild(row);
-    saveParticipants(); // Save the updated list to localStorage
+    document.getElementById('participantsBody').removeChild(row);
+    saveParticipants();
 }
 
 function assignSecretSantas() {
     const inputs = document.querySelectorAll('.participant-input');
     const names = Array.from(inputs).map(input => input.value.trim());
-    
+
     if (names.some(name => name === '')) {
         alert('All fields must be filled.');
         return;
     }
 
-    const uniqueNames = new Set(names);
-    if (uniqueNames.size !== names.length) {
+    if (new Set(names).size !== names.length) {
         alert('Names must be unique.');
         return;
     }
 
     const shuffledNames = shuffleArray([...names]);
 
+    // Ensure no one gets themselves
     for (let i = 0; i < names.length; i++) {
         if (names[i] === shuffledNames[i]) {
             shuffledNames.push(shuffledNames.splice(i, 1)[0]);
-            i = -1; // Reset the loop to check the entire array again
+            i = -1; // Reset the loop
         }
     }
 
     const rows = document.querySelectorAll('#participantsTable tbody tr');
-    for (let i = 0; i < names.length; i++) {
-        rows[i].cells[1].innerText = shuffledNames[i];
+    rows.forEach((row, index) => {
+        const recipientCell = row.cells[1];
+        recipientCell.innerHTML = ''; // Clear existing content
+        recipientCell.innerText = shuffledNames[index];
+
         const img = document.createElement('img');
         img.src = "images/upDown.png";
         img.classList.add('cell-image');
-        rows[i].cells[1].appendChild(img);
-    }
+        recipientCell.appendChild(img);
+    });
 
-    // Save the participants and recipients to localStorage
     saveParticipants(names, shuffledNames);
 }
 
 function saveParticipants(names = [], recipients = []) {
-    if (names.length === 0) {
+    if (!names.length) {
         const inputs = document.querySelectorAll('.participant-input');
         names = Array.from(inputs).map(input => input.value.trim());
     }
-    if (recipients.length === 0) {
+
+    if (!recipients.length) {
         recipients = Array(names.length).fill('');
     }
+
     const participants = names.map((name, index) => ({ name, recipient: recipients[index] }));
     localStorage.setItem('participants', JSON.stringify(participants));
 }
 
 function loadParticipants() {
     const participantsBody = document.getElementById('participantsBody');
-    const savedParticipants = localStorage.getItem('participants');
-    if (savedParticipants) {
-        const participants = JSON.parse(savedParticipants);
-        participants.forEach(participant => {
-            addParticipant(participantsBody, participant.name);
-        });
-        assignSecretSantas(); // Assign recipients based on saved data
-    }
+    const savedParticipants = JSON.parse(localStorage.getItem('participants') || '[]');
+
+    savedParticipants.forEach(participant => {
+        addParticipant(participantsBody, participant.name);
+    });
+
+    assignSecretSantas(); // Reassign saved data
+}
+
+function resetParticipants() {
+    localStorage.removeItem('participants');
+    const participantsBody = document.getElementById('participantsBody');
+    participantsBody.innerHTML = ''; // Clear all rows
+    addParticipant(participantsBody); // Add an empty row
 }
 
 function shuffleArray(array) {
@@ -130,41 +137,64 @@ function shuffleArray(array) {
 // Drag-and-Drop Handlers
 function addDragAndDropHandlers(cell) {
     cell.addEventListener('dragstart', (event) => {
-        event.dataTransfer.setData('text/plain', event.target.innerText);
-        event.target.classList.add('dragging');
+        event.dataTransfer.setData('text/html', cell.outerHTML);
+        cell.classList.add('dragging');
     });
 
     cell.addEventListener('dragover', (event) => {
         event.preventDefault();
-        event.target.classList.add('dragover');
+        cell.classList.add('dragover');
     });
 
-    cell.addEventListener('dragleave', (event) => {
-        event.target.classList.remove('dragover');
+    cell.addEventListener('dragleave', () => {
+        cell.classList.remove('dragover');
     });
 
     cell.addEventListener('drop', (event) => {
         event.preventDefault();
-        const draggedText = event.dataTransfer.getData('text/plain');
-        const targetText = event.target.innerText;
 
-        // Swap the text values of the dragged and target cells
-        event.target.innerText = draggedText;
-
+        const dropTarget = event.target.closest('.receipient-cell');
         const draggingCell = document.querySelector('.dragging');
-        if (draggingCell) draggingCell.innerText = targetText;
 
-        event.target.classList.remove('dragover');
+        if (dropTarget && draggingCell && dropTarget !== draggingCell) {
+            const draggedHTML = draggingCell.outerHTML;
+            const targetHTML = dropTarget.outerHTML;
+
+            draggingCell.outerHTML = targetHTML;
+            dropTarget.outerHTML = draggedHTML;
+
+            reattachEventListeners();
+        }
     });
 
-    cell.addEventListener('dragend', (event) => {
-        event.target.classList.remove('dragging');
+    cell.addEventListener('dragend', () => {
+        cell.classList.remove('dragging');
+    });
+
+    // Touch Support
+    cell.addEventListener('touchstart', (event) => {
+        cell.classList.add('dragging');
+    });
+
+    cell.addEventListener('touchend', (event) => {
+        const draggingCell = document.querySelector('.dragging');
+        const touch = event.changedTouches[0];
+        const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.receipient-cell');
+
+        if (dropTarget && draggingCell && dropTarget !== draggingCell) {
+            const draggedHTML = draggingCell.outerHTML;
+            const targetHTML = dropTarget.outerHTML;
+
+            draggingCell.outerHTML = targetHTML;
+            dropTarget.outerHTML = draggedHTML;
+
+            reattachEventListeners();
+        }
+
+        cell.classList.remove('dragging');
     });
 }
 
-function resetParticipants() {
-    localStorage.removeItem('participants');
-    const participantsBody = document.getElementById('participantsBody');
-    participantsBody.innerHTML = ''; // Clear the table
-    addParticipant(participantsBody);
+function reattachEventListeners() {
+    document.querySelectorAll('.receipient-cell').forEach(addDragAndDropHandlers);
 }

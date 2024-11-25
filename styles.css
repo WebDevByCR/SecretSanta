@@ -23,6 +23,11 @@ body {
 h1, h2 {
     text-align: center;
     color: #ff0000; /* Christmas Red */
+}
+
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
     position: relative;
 }
 
@@ -37,11 +42,6 @@ h1 a {
 
 h1 a:hover {
     text-decoration: underline;
-}
-
-h1 {
-    font-size: 1.8rem;
-    margin-bottom: 10px;
 }
 
 h2 {
@@ -67,6 +67,7 @@ input[type="number"], .participant-input {
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 5px;
+    flex: 1; /* Make the input take the remaining space */
 }
 
 button {
@@ -124,8 +125,20 @@ td {
     margin-left: 10px; /* Add space between image and text */
 }
 
+.remove-icon {
+    cursor: pointer;
+    margin-right: 10px; /* Space between icon and input field */
+    color: red;
+}
+
+/* Input container to align remove icon and input field */
+.input-container {
+    display: flex;
+    align-items: center;
+}
+
 /* Responsive design */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .container {
         margin: 10px;
         padding: 15px;
@@ -150,18 +163,14 @@ td {
     }
 }
 
-.dragging {
-    opacity: 0.5;
-    background-color: #ffcccc; /* Light red for dragging feedback */
-}
+@media (max-width: 480px) {
+    .participant-input, button {
+        font-size: 0.8rem;
+        padding: 6px;
+    }
 
-.dragover {
-    background-color: #ccffcc; /* Light green for drop target feedback */
-    border: 2px dashed #3c8d0d;
-}
-
-.remove-icon {
-    cursor: pointer;
-    margin-left: 10px;
-    color: red;
+    table th, table td {
+        font-size: 0.7rem;
+        padding: 6px;
+    }
 }
