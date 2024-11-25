@@ -12,7 +12,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Load participants from localStorage
-    loadParticipants();
+    if(localStorage.length > 0){
+        loadParticipants();
+    }else{
+        addParticipant(participantsBody);
+    }
 });
 
 function addParticipant(participantsBody, name = '') {
